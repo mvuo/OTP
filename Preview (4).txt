@@ -1,0 +1,99 @@
+./p5testscript.sh
+#Initializing - Cleaning up - ignore Operation Not Permitted errors
+
+#-----------------------------------------
+#START OF GRADING SCRIPT
+#keygen 20 > key20
+#5 POINTS: key20 must exist
+key20 exists!
+
+#-----------------------------------------
+#5 POINTS: Number of characters in key20, should be 21:
+21 key20
+Looks good!
+
+#-----------------------------------------
+#keygen 70000 > key70000
+#5 POINTS: Number of characters in key70000, should be 70001:
+70001 key70000
+Looks good!
+
+#-----------------------------------------
+#enc_client plaintext1 key20 $encport
+#10 POINTS: Should return error about too-short key
+Error: Can't receive the plain text
+Error: key 'key20' is too short
+Looks good!
+
+#-----------------------------------------
+#enc_client plaintext1 key70000 $encport
+#20 POINTS: Should return encrypted version of plaintext1
+IRAXTCYTYWQJOZBIIPDRJCCFANHGMPZWZVHN
+
+#-----------------------------------------
+#enc_client plaintext1 key70000 $encport > ciphertext1
+#10 POINTS: ciphertext1 must exist
+ciphertext1 exists!
+
+#-----------------------------------------
+#10 POINTS: ciphertext1 must be same number of chars as source
+#wc -m plaintext1
+37 plaintext1
+#Should be same: wc -m ciphertext1
+37 ciphertext1
+looks good
+
+#-----------------------------------------
+#5 POINTS: ciphertext1 should look encrypted
+IRAXTCYTYWQJOZBIIPDRJCCFANHGMPZWZVHN
+Looks encrypted to me!
+
+#-----------------------------------------
+#dec_client ciphertext1 key70000 $encport
+#5 POINTS: Should fail giving error that dec_client cannot use enc_server
+Error: wrong client type
+
+Error: wrong server type, port 1880
+Looks good!
+
+#-----------------------------------------
+#20 POINTS: should return decrypted ciphertext1 that matches source
+#cat plaintext1
+THE RED GOOSE FLIES AT MIDNIGHT STOP
+#dec_client ciphertext1 key70000 $decport
+THE RED GOOSE FLIES AT MIDNIGHT STOP
+Matches
+
+#-----------------------------------------
+#dec_client ciphertext1 key70000 $decport > plaintext1_a
+#10 POINTS: plaintext1_a must exist
+plaintext1_a exists!
+
+#-----------------------------------------
+#cmp plaintext1 plaintext1_a
+#5 POINTS: plaintext1 must be the same as plaintext1_a:
+#echo $? should be == 0, which means the cmp succeeded!
+0
+looks good
+
+#-----------------------------------------
+#20 POINTS: concurrent test of encryption - look for 4 properly-sized ciphertext# files, or 5 where the 5th is 0 bytes
+#5 POINTS: Should be only one error about plaintext5 being bad
+Ten second sleep, your program must complete in this time
+Error: Can't receive the plain text
+./enc_client error: input contains bad characters
+Files sizes match!
+Only one error!
+
+#-----------------------------------------
+#15 POINTS: concurrent test of decryption - look for 4 plaintext#_a files that match the plaintext# files
+#Ten second sleep, your program must complete in this time
+Files match!
+
+#-----------------------------------------
+#Cleaning up - ignore Operation Not Permitted errors
+./p5testscript.sh: line 263:  8255 Terminated              ./enc_server $encport
+./p5testscript.sh: line 263:  8256 Terminated              ./dec_server $decport
+
+#SCRIPT COMPLETE
+150 / 150
